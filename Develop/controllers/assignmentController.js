@@ -54,7 +54,28 @@ async function updateAssignment(req,res) {
     }
 }
 
+async function deleteAssignment(req,res) {
+    try {
+        const assignmentData = await Assignment.findOneAndRemove({_id: req.params.assignId})
+        if(!assignmentData){
+            res.status(404).json({message: `Assignment with that id not found`})
+            return
+        }
+        const studentData = await Student.findOneAndUpdate(
+            {assignments: req.params.assignId},
+            {$pull: {assignments: req.params.assignId}},
+            {new: true}
+        )
+        if(!studentData){
+            res.status(404).json({message: `Assignment deleted but no student found with assignment`})
+        } else {
+            res.status(200).json({message: `Assignment deleted everywhere`})
+        }
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
 
 
 
-module.export = {getAssignments, getSingleAssignments, createAssignment, updateAssignment}
+module.export = {getAssignments, getSingleAssignments, createAssignment, updateAssignment, deleteAssignment}
