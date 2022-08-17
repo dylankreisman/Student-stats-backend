@@ -1,4 +1,4 @@
-const {Assignment, Student, Course} = require('../models')
+const {Assignment, Student} = require('../models')
 
 async function getAssignments(req,res) {
     try {
